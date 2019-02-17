@@ -39,10 +39,10 @@ You're reading it!
 In this section different filtering techniques are applied to our point cloud. Our RGB-D camera will provide
  the point cloud with noise which will be removed by applying the statistical outliner filter. Next, data will
  be downsampled in order to improve computational cost. To achieve so, the Voxel Grid Downsampling Filter
- will be applied. Later, two passthrough filters will be implemented to remove useless dato from our point 
+ will be applied. Later, two passthrough filters will be implemented to remove useless data from our point 
  cloud. Once we have our table with the objects of interest, it is useful to separe our table from other 
  objects. To do this, the Radom Sample Consensus or "RANSAC" technique will identify the elements which belong 
- to a plane, in this case, this will be our table. 
+ to a plane, in this case, our table. 
  
 * Statistical outliner filter
 
@@ -104,7 +104,14 @@ In this section different filtering techniques are applied to our point cloud. O
 
 * RANSAC Plane Segmentation
 
- 
+ ```
+    # TODO: RANSAC Plane Segmentation
+    seg = cloud_filtered.make_segmenter()
+    seg.set_model_type(pcl.SACMODEL_PLANE) 
+    seg.set_method_type(pcl.SAC_RANSAC)
+    max_distance = 0.006
+    seg.set_distance_threshold(max_distance)
+```
 
 
 
