@@ -1,8 +1,9 @@
 ## Project: Perception Pick & Place
-### Writeup Template: You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
 
----
+[//]: # (Image References)
 
+[ConfusionMatrixLinear]: ./misc_images/ConfusionMatrixLinear.png
+[ConfusionMatrixRBF]: ./misc_images/ConfusionMatrixRBF.png
 
 # Required Steps for a Passing Submission:
 1. Extract features and train an SVM model on new objects (see `pick_list_*.yaml` in `/pr2_robot/config/` for the list of models you'll be trying to identify). 
@@ -117,18 +118,88 @@ In this section different filtering techniques are applied to our point cloud. O
 
 
 #### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
+Up to this point we have the objects and the table in two point clouds. The table can be ruled out, but we need to separate the objects
+to be able to identify each one. In order to achive so, Euclidean Clustering technique will be applied.
+
+
+
+
+ ```
+    # TODO: Euclidean Clustering
+    white_cloud = XYZRGB_to_XYZ(cloud_objects)
+    tree = white_cloud.make_kdtree()
+    # Create a cluster extraction object
+    ec = white_cloud.make_EuclideanClusterExtraction()
+    # Set tolerances for distance threshold 
+    # as well as minimum and maximum cluster size (in points)
+    # NOTE: These are poor choices of clustering parameters
+    # Your task is to experiment and find values that work for segmenting objects.
+    ec.set_ClusterTolerance(0.03)
+    ec.set_MinClusterSize(10)#mine 25, others: 10
+    ec.set_MaxClusterSize(9000)#mine 1200, others: 3000
+    # Search the k-d tree for clusters
+    ec.set_SearchMethod(tree)
+    # Extract indices for each of the discovered clusters
+    cluster_indices = ec.Extract()
+
+```
+
+Now that we have the clusters we will create a Cluster-Mask Point Cloud to visualize each cluster separately.
+
+ ```
+    # TODO: Create Cluster-Mask Point Cloud to visualize each cluster separately
+    #Assign a color corresponding to each segmented object in scene
+    cluster_color = get_color_list(len(cluster_indices))
+
+    color_cluster_point_list = []
+
+    for j, indices in enumerate(cluster_indices):
+        for i, indice in enumerate(indices):
+            color_cluster_point_list.append([white_cloud[indice][0],
+                                            white_cloud[indice][1],
+                                            white_cloud[indice][2],
+                                             rgb_to_float(cluster_color[j])])
+
+    #Create new cloud containing all clusters, each with unique color
+    cluster_cloud = pcl.PointCloud_PointXYZRGB()
+    cluster_cloud.from_list(color_cluster_point_list)
+
+```
 
 #### 2. Complete Exercise 3 Steps.  Features extracted and SVM trained.  Object recognition implemented.
-Here is an example of how to include an image in your writeup.
+In this section, we are going to associate each cloud point with the object that it represents. To do so we
+will use the Support Vector Machine or "SVM", which is a supervised machine learning algorithm that allows you to characterize
+ the parameter space of your dataset into discrete classes.
+ 
+First we need to generate a training set of features for the pickable objects. To create that training
+the models in capture_features.py have been modified. To improve the model accuracy the number of poses 
+have been set to 100.
 
-![demo-1](https://user-images.githubusercontent.com/20687560/28748231-46b5b912-7467-11e7-8778-3095172b7b19.png)
+ ```
+models = [\
+       'biscuits',
+       'book',
+       'eraser',
+       'glue',
+       'soap',
+       'soap2',
+       'sticky_notes',
+       'snacks']
+
+```
+
+Once obtained the training set, we train our SVM model. Two different SVM kernels have been tested linear and
+ RFB. Below are depicted the confusion matrices for each kernel.
+ 
+ Confusion matrix with linear kernel
+![Confusion Matrix Linear][ConfusionMatrixLinear]
+
+ Confusion matrix with rbf kernel
+![Confusion Matrix RBF][ConfusionMatrixRBF]
 
 ### Pick and Place Setup
 
 #### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
-
-And here's another image! 
-![demo-2](https://user-images.githubusercontent.com/20687560/28748286-9f65680e-7468-11e7-83dc-f1a32380b89c.png)
 
 Spend some time at the end to discuss your code, what techniques you used, what worked and why, where the implementation might fail and how you might improve it if you were going to pursue this project further.  
 
