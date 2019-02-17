@@ -36,12 +36,78 @@ You're reading it!
 
 ### Exercise 1, 2 and 3 pipeline implemented
 #### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
-
+In this section different filtering techniques are applied to our point cloud. Our RGB-D camera will provide
+ the point cloud with noise which will be removed by applying the statistical outliner filter. Next, data will
+ be downsampled in order to improve computational cost. To achieve so, the Voxel Grid Downsampling Filter
+ will be applied. Later, two passthrough filters will be implemented to remove useless dato from our point 
+ cloud. Once we have our table with the objects of interest, it is useful to separe our table from other 
+ objects. To do this, the Radom Sample Consensus or "RANSAC" technique will identify the elements which belong 
+ to a plane, in this case, this will be our table. 
+ 
+* Statistical outliner filter
 
 ```
-<joint name="joint_1" type="revolute">
-    <origin xyz="0 0 0.33" rpy="0 0 0"/>
+    # TODO: Statistical Outlier Filtering
+    # Filter object: 
+    outlier_filter = cloud.make_statistical_outlier_filter()
+
+    # Set the number of neighboring points to analyze for any given point
+    outlier_filter.set_mean_k(8)
+
+    # Set threshold scale factor
+    x = 0.3
+
+    # Any point with a mean distance larger than global (mean distance +x*std_dev) will be considered outlier
+    outlier_filter.set_std_dev_mul_thresh(x)
+
+    # Finally call the filter function for magic
+    cloud_filtered = outlier_filter.filter()
 ```
+
+* Voxel Grid Downsampling filter
+
+```
+    # TODO: Voxel Grid Downsampling
+    vox = cloud_filtered.make_voxel_grid_filter()
+    LEAF_SIZE = 0.005
+    vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
+    cloud_filtered = vox.filter()
+```
+
+* PassThrough filter Z
+
+```
+    # TODO: PassThrough Filter Z
+    passthrough = cloud_filtered.make_passthrough_filter()
+    # Assign axis and range to the passthrough filter object.
+    filter_axis = 'z'
+    passthrough.set_filter_field_name(filter_axis)
+    axis_min = 0.6095
+    axis_max = 1.1
+    passthrough.set_filter_limits(axis_min, axis_max)
+    cloud_filtered = passthrough.filter()
+```
+
+* PassThrough filter Y
+
+```
+    # TODO: PassThrough Filter Y
+    passthrough = cloud_filtered.make_passthrough_filter()
+    # Assign axis and range to the passthrough filter object.
+    filter_axis = 'y'
+    passthrough.set_filter_field_name(filter_axis)
+    axis_min = -0.456
+    axis_max = 0.456
+    passthrough.set_filter_limits(axis_min, axis_max)
+    cloud_filtered = passthrough.filter()
+```
+
+* RANSAC Plane Segmentation
+
+ 
+
+
+
 
 #### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
 
