@@ -100,7 +100,7 @@ def pcl_callback(pcl_msg):
     seg = cloud_filtered.make_segmenter()
     seg.set_model_type(pcl.SACMODEL_PLANE) 
     seg.set_method_type(pcl.SAC_RANSAC)
-    max_distance = 0.015#0.006
+    max_distance = 0.015
     seg.set_distance_threshold(max_distance)
 
     # TODO: Extract inliers and outliers
@@ -118,8 +118,8 @@ def pcl_callback(pcl_msg):
     # NOTE: These are poor choices of clustering parameters
     # Your task is to experiment and find values that work for segmenting objects.
     ec.set_ClusterTolerance(0.01)
-    ec.set_MinClusterSize(50)#mine 25, others: 10
-    ec.set_MaxClusterSize(15000)#mine 1200, others: 3000
+    ec.set_MinClusterSize(50)
+    ec.set_MaxClusterSize(3000)
     # Search the k-d tree for clusters
     ec.set_SearchMethod(tree)
     # Extract indices for each of the discovered clusters
@@ -188,79 +188,7 @@ def pcl_callback(pcl_msg):
     rospy.loginfo('Detected {} objects: {}'.format(len(detected_objects_labels), detected_objects_labels))
     # Publish the list of detected objects
     detected_objects_pub.publish(detected_objects)
-    # Suggested location for where to invoke your pr2_mover() function within pcl_callback()
-    # Could add some logic to determine whether or not your object detections are robust
-    # before calling pr2_mover()
-    try:
-        pr2_mover(detected_objects)
-    except rospy.ROSInterruptException:
-        pass
-
-def pr2_mover(object_list):
     
-    test_scene_num = Int32()
-    object_name = String()
-    arm_name = String()
-    pick_pose = Pose()
-    place_pose = Pose()
-    yaml_dist_list = []
-    
-    test_scene_num.data = 1
-    
-    object_list_param = rospy.get_param('/object_list')
-    dropbox_param = rospy.get_param('/dropbox')
-    
-    labels = []
-    centroids = [] # to be list of tuples (x, y, z)
-    
-    for object in object_list:
-        labels.append(object.label)
-        points_arr = ros_to_pcl(object.cloud).to_array()
-        centroids.append(np.mean(points_arr, axis=0)[:3])
-    
-    
-    # For through pick list
-    for i in range(0,len(object_list_param)):
-
-        object_name.data = object_list_param[i]['name']
-        object_group = object_list_param[i]['group']
-    
-        # Pick pose
-        try:
-            index = labels.index(object_name.data)
-            print(index)
-        except ValueError:
-            print "Object not detected: %s" %object_name.data
-            continue
-        print("pick_pose")
-        pick_pose.position.x = np.asscalar(centroids[index][0])
-        pick_pose.position.y = np.asscalar(centroids[index][1])
-        pick_pose.position.z = np.asscalar(centroids[index][2])
-        print("place_pose")
-        position = search_dictionaries('group',object_group,'position',dropbox_param)
-        place_pose.position.x = position[0]
-        place_pose.position.y = position[1]
-        place_pose.position.z = position[2]
-    
-        arm_name.data = search_dictionaries('group',object_group,'name',dropbox_param)
-        print("yaml_dict")
-        yaml_dict = make_yaml_dict(test_scene_num, arm_name, object_name, pick_pose, place_pose)
-        yaml_dict_list.append(yaml_dict)    
-    
-        #rospy.wait_for_service('pick_place_routine')
-        #try:
-        #    pick_place_routine = rospy.ServiceProxy('pick_place_routine',PickPlace)
-        #    # Insert your message variables to be sent as a service request
-        #    resp = pick_place_routine(test_scene_num,object_name,arm_name,pick_pose,place_pose)
-        #    print("Response: ", resp.success)
-        #except rospy.ServiceException, e:
-        #    print "Service call failed: %s"%e
-    
-        yaml_name = 'output_'+str(test_scene_num.data)+'.yaml'
-        send_to_yaml(yaml_name, yaml_dict_list)
-        print("Sended to yaml")
-
-
 if __name__ == '__main__':
 
     # TODO: ROS node initialization
