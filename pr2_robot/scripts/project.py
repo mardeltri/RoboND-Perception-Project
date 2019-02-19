@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # Import modules
+import matplotlib.pyplot as plt
 import numpy as np
 import sklearn
 from sklearn.preprocessing import LabelEncoder
@@ -100,7 +101,7 @@ def pcl_callback(pcl_msg):
     seg = cloud_filtered.make_segmenter()
     seg.set_model_type(pcl.SACMODEL_PLANE) 
     seg.set_method_type(pcl.SAC_RANSAC)
-    max_distance = 0.015
+    max_distance = 0.015#0.006
     seg.set_distance_threshold(max_distance)
 
     # TODO: Extract inliers and outliers
@@ -119,7 +120,7 @@ def pcl_callback(pcl_msg):
     # Your task is to experiment and find values that work for segmenting objects.
     ec.set_ClusterTolerance(0.01)
     ec.set_MinClusterSize(50)
-    ec.set_MaxClusterSize(3000)
+    ec.set_MaxClusterSize(3000)#mine 1200, others: 3000
     # Search the k-d tree for clusters
     ec.set_SearchMethod(tree)
     # Extract indices for each of the discovered clusters
@@ -153,6 +154,7 @@ def pcl_callback(pcl_msg):
     pcl_cluster_pub.publish(ros_cluster_cloud)
 
     # Exercise-3 TODOs:
+    plotting = True
 
     # Classify the clusters! (loop through each detected cluster one at a time)
     detected_objects_labels = []
@@ -174,10 +176,23 @@ def pcl_callback(pcl_msg):
         prediction = clf.predict(scaler.transform(feature.reshape(1,-1)))
         label = encoder.inverse_transform(prediction)[0]
         detected_objects_labels.append(label)
-        print(label)
+        # plot histograms for debugging purposes
+        if plotting == True:
+            if feature is not None:
+                fig = plt.figure(figsize=(12,6))
+	        plt.plot(chists)
+	        plt.plot(nhists)
+	        plt.title('Color and normals feature vectors for %s' % label, fontsize=30)
+	        plt.tick_params(axis='both', which='major', labelsize=20)
+	        fig.tight_layout()
+	        plt.savefig('%s%d_orec_features.png' % (label, len(detected_objects_labels)))
+	        plt.show()
+	    else:
+                print('Your function is returning None...')
+        #print(label)
         # Publish a label into RViz
         label_pos = list(white_cloud[pts_list[0]])
-        label_pos[2] += .4
+        label_pos[2] += .2
         object_markers_pub.publish(make_label(label,label_pos, index))
         # Add the detected object to the list of detected objects.
         do = DetectedObject()
@@ -188,7 +203,9 @@ def pcl_callback(pcl_msg):
     rospy.loginfo('Detected {} objects: {}'.format(len(detected_objects_labels), detected_objects_labels))
     # Publish the list of detected objects
     detected_objects_pub.publish(detected_objects)
-    
+
+
+
 if __name__ == '__main__':
 
     # TODO: ROS node initialization
@@ -204,7 +221,7 @@ if __name__ == '__main__':
     object_markers_pub = rospy.Publisher("/object_markers", Marker, queue_size=1)
     detected_objects_pub = rospy.Publisher("/detected_objects", DetectedObjectsArray, queue_size=1)
     # Load Model From disk
-    model = pickle.load(open('model.sav', 'rb'))
+    model = pickle.load(open('model_m1.sav', 'rb'))
     clf = model['classifier']
     encoder = LabelEncoder()
     encoder.classes_ = model['classes']
