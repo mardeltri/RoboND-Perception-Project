@@ -8,15 +8,10 @@
 [NConfusionMatrixW1_v2]: ./misc_images/NConfunsionMatrix_m1_v2.png
 [W1]: ./misc_images/W1.png
 
-## [Rubric](https://review.udacity.com/#!/rubrics/1067/view) Points
-### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
-
----
-### Writeup / README
-
-#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  
-
-You're reading it!
+In this project, we will be working with different techniques which will help us to recognize
+diferent objects. First, several filtering algorithms will be implemented to deal with the original 
+point cloud and obtain the one for each object. Later, analysing these point clouds with a
+SVN model, we will be able to identify each object.
 
 ### Exercise 1, 2 and 3 pipeline implemented
 #### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
