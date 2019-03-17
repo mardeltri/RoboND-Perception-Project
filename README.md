@@ -15,7 +15,7 @@ SVN model, we will be able to identify each object.
 
 ### Exercise 1, 2 and 3 pipeline implemented
 #### 1. Complete Exercise 1 steps. Pipeline for filtering and RANSAC plane fitting implemented.
-In this section different filtering techniques are applied to our point cloud. Our RGB-D camera will provide
+In this section several filtering techniques are applied to our point cloud. Our RGB-D camera will provide
  the point cloud with noise which will be removed by applying the statistical outliner filter. Next, data will
  be downsampled in order to improve computational cost. To achieve so, the Voxel Grid Downsampling Filter
  will be applied. Later, two passthrough filters will be implemented to remove useless data from our point 
@@ -26,7 +26,7 @@ In this section different filtering techniques are applied to our point cloud. O
 * Statistical outliner filter
 
 ```
-    # TODO: Statistical Outlier Filtering
+    # Statistical Outlier Filtering
     # Filter object: 
     outlier_filter = cloud.make_statistical_outlier_filter()
 
@@ -46,7 +46,7 @@ In this section different filtering techniques are applied to our point cloud. O
 * Voxel Grid Downsampling filter
 
 ```
-    # TODO: Voxel Grid Downsampling
+    # Voxel Grid Downsampling
     vox = cloud_filtered.make_voxel_grid_filter()
     LEAF_SIZE = 0.005
     vox.set_leaf_size(LEAF_SIZE, LEAF_SIZE, LEAF_SIZE)
@@ -56,7 +56,7 @@ In this section different filtering techniques are applied to our point cloud. O
 * PassThrough filter Z
 
 ```
-    # TODO: PassThrough Filter Z
+    # PassThrough Filter Z
     passthrough = cloud_filtered.make_passthrough_filter()
     # Assign axis and range to the passthrough filter object.
     filter_axis = 'z'
@@ -70,7 +70,7 @@ In this section different filtering techniques are applied to our point cloud. O
 * PassThrough filter Y
 
 ```
-    # TODO: PassThrough Filter Y
+    # PassThrough Filter Y
     passthrough = cloud_filtered.make_passthrough_filter()
     # Assign axis and range to the passthrough filter object.
     filter_axis = 'y'
@@ -84,7 +84,7 @@ In this section different filtering techniques are applied to our point cloud. O
 * RANSAC Plane Segmentation
 
  ```
-    # TODO: RANSAC Plane Segmentation
+    # RANSAC Plane Segmentation
     seg = cloud_filtered.make_segmenter()
     seg.set_model_type(pcl.SACMODEL_PLANE) 
     seg.set_method_type(pcl.SAC_RANSAC)
@@ -103,7 +103,7 @@ to be able to identify each one. In order to achive so, Euclidean Clustering tec
 
 
  ```
-    # TODO: Euclidean Clustering
+    # Euclidean Clustering
     white_cloud = XYZRGB_to_XYZ(cloud_objects)
     tree = white_cloud.make_kdtree()
     # Create a cluster extraction object
@@ -125,7 +125,7 @@ to be able to identify each one. In order to achive so, Euclidean Clustering tec
 Now that we have the clusters we will create a Cluster-Mask Point Cloud to visualize each cluster separately.
 
  ```
-    # TODO: Create Cluster-Mask Point Cloud to visualize each cluster separately
+    # Create Cluster-Mask Point Cloud to visualize each cluster separately
     #Assign a color corresponding to each segmented object in scene
     cluster_color = get_color_list(len(cluster_indices))
 
@@ -181,10 +181,13 @@ The confusion matrices obtained are shown below.
 
 <img src="./misc_images/ConfusionMatrix_m1_v2.png" width="400" /><img src="./misc_images/NConfunsionMatrix_m1_v2.png" width="400" />
 
+<img src="./misc_images/ConfusionMatrix_W2_v1.png" width="400" /><img src="./misc_images/NConfusionMatrix_W2_v1.png" width="400" />
 ### Pick and Place Setup
 
 #### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
 
-As it can be seen, the model is excellent, however, we are not able to distinguised correctly the objects.
+As it can be seen, the model is excellent for world 1 and very good for world 2, however, we are not able to distinguised correctly the objects.
 
 <img src="./misc_images/W1.png" width="400" />
+
+<img src="./misc_images/W2.png" width="400" />
