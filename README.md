@@ -184,9 +184,7 @@ Considering that with any of the previous models the objects were identified cor
 in order to improve its accuracy. In this case, three objects were included when creating the model for the first world.
 The confusion matrices obtained are shown below.
 
-<img src="./misc_images/ConfusionMatrix_m1_v2.png" width="400" />
-
-<img src="./misc_images/NConfunsionMatrix_m1_v2.png" width="400" />
+<img src="./misc_images/ConfusionMatrix_m1_v2.png" width="400" /><img src="./misc_images/NConfunsionMatrix_m1_v2.png" width="400" />
 
 ### Pick and Place Setup
 
