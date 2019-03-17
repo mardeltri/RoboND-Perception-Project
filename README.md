@@ -184,16 +184,14 @@ Considering that with any of the previous models the objects were identified cor
 in order to improve its accuracy. In this case, three objects were included when creating the model for the first world.
 The confusion matrices obtained are shown below.
 
-![Confusion Matrix RBF][ConfusionMatrixW1_v2]
+<img src="./misc_images/ConfusionMatrix_m1_v2.png" width="400" />
 
-![Normalized Confusion Matrix RBF][NConfusionMatrixW1_v2]
-
-As it can be seen, the model is excellent, however, we are not able to distinguised correctly the objects.
-
-![World 1 objects detection][W1]
+<img src="./misc_images/NConfunsionMatrix_m1_v2.png" width="400" />
 
 ### Pick and Place Setup
 
 #### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
 
+As it can be seen, the model is excellent, however, we are not able to distinguised correctly the objects.
 
+<img src="./misc_images/W1.png" width="400" />
