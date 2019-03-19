@@ -151,7 +151,7 @@ will use the Support Vector Machine or "SVM", which is a supervised machine lear
  
 First we need to generate a training set of features for the pickable objects. To create that training
 the models in capture_features.py have been modified. To improve the model accuracy the number of poses 
-have been set to 100.
+have been set to 200.
 
  ```
 models = [\
@@ -165,7 +165,69 @@ models = [\
        'snacks']
 
 ```
+Below compute_color_histograms and compute_normal_histograms functions have been included. It can be
+seen that 64 bins have been defined to carry out both histograms.
+```
+def compute_color_histograms(cloud, using_hsv=False):
 
+    # Compute histograms for the clusters
+    point_colors_list = []
+
+    # Step through each point in the point cloud
+    for point in pc2.read_points(cloud, skip_nans=True):
+        rgb_list = float_to_rgb(point[3])
+        if using_hsv:
+            point_colors_list.append(rgb_to_hsv(rgb_list) * 255)
+        else:
+            point_colors_list.append(rgb_list)
+
+    # Populate lists with color values
+    channel_1_vals = []
+    channel_2_vals = []
+    channel_3_vals = []
+
+    for color in point_colors_list:
+        channel_1_vals.append(color[0])
+        channel_2_vals.append(color[1])
+        channel_3_vals.append(color[2])
+    
+    # Compute histograms
+    channel_1_hist = np.histogram(channel_1_vals, bins=64, range=(0, 256))
+    channel_2_hist = np.histogram(channel_2_vals, bins=64, range=(0, 256))
+    channel_3_hist = np.histogram(channel_3_vals, bins=64, range=(0, 256))
+
+    # Concatenate and normalize the histograms
+    hist_features = np.concatenate((channel_1_hist[0], channel_2_hist[0], channel_3_hist[0])).astype(np.float64)
+    normed_features = hist_features / np.sum(hist_features)
+
+    return normed_features 
+
+```
+```
+def compute_normal_histograms(normal_cloud):
+    norm_x_vals = []
+    norm_y_vals = []
+    norm_z_vals = []
+
+    for norm_component in pc2.read_points(normal_cloud,
+                                          field_names = ('normal_x', 'normal_y', 'normal_z'),
+                                          skip_nans=True):
+        norm_x_vals.append(norm_component[0])
+        norm_y_vals.append(norm_component[1])
+        norm_z_vals.append(norm_component[2])
+
+    # Compute histograms of normal values (just like with color)
+    norm_x_hist = np.histogram(norm_x_vals, bins=64, range=(-1, 1))
+    norm_y_hist = np.histogram(norm_y_vals, bins=64, range=(-1, 1))
+    norm_z_hist = np.histogram(norm_z_vals, bins=64, range=(-1, 1))
+
+    # Concatenate and normalize the histograms
+    hist_features = np.concatenate((norm_x_hist[0], norm_y_hist[0], norm_z_hist[0])).astype(np.float64)
+    normed_features = hist_features / np.sum(hist_features)
+
+    return normed_features
+	
+```
 Once obtained the training set, we train our SVM model. Two different SVM kernels have been tested linear and
  RFB. Below are depicted the confusion matrices for each kernel.
  
