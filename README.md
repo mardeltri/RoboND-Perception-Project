@@ -179,15 +179,13 @@ Considering that with any of the previous models the objects were identified cor
 in order to improve its accuracy. In this case, three objects were included when creating the model for the first world.
 The confusion matrices obtained are shown below.
 
-<img src="./misc_images/ConfusionMatrix_m1_v2.png" width="400" /><img src="./misc_images/NConfusionMatrix_m1_v2.png" width="400" />
+<img src="./misc_images/ConfusionMatrix_w1_200_64.png" width="400" /><img src="./misc_images/NConfusionMatrix_w1_200_64.png" width="400" />
 
 <img src="./misc_images/ConfusionMatrix_W2_v1.png" width="400" /><img src="./misc_images/NConfusionMatrix_W2_v1.png" width="400" />
 ### Pick and Place Setup
 
 #### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
-
-As it can be seen, the model is excellent for world 1 and very good for world 2, however, we are not able to distinguised correctly the objects.
-
+As it can be seen 3/3(100%) objects are recognised in test case 1.
 <img src="./misc_images/W1.png" width="400" />
 
 <img src="./misc_images/W2.png" width="400" />
