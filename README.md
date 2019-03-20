@@ -247,7 +247,11 @@ The confusion matrices obtained are shown below.
 ### Pick and Place Setup
 
 #### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
-As it can be seen 3/3(100%) objects are recognised in test case 1.
+As it can be seen 3/3(100%) objects are recognised in test case 1, 4/5(80%) in test case 2 and 6/8(75%) in test case 3.
+
 <img src="./misc_images/W1.png" width="400" />
 
 <img src="./misc_images/W2.png" width="400" />
+
+<img src="./misc_images/W3.png" width="400" />
+
