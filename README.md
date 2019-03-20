@@ -92,7 +92,9 @@ In this section several filtering techniques are applied to our point cloud. Our
     seg.set_distance_threshold(max_distance)
 ```
 
+<img src="./misc_images/pcl_table.png" width="400" />
 
+<img src="./misc_images/pcl_objects.png" width="400" />
 
 
 #### 2. Complete Exercise 2 steps: Pipeline including clustering for segmentation implemented.  
@@ -143,6 +145,9 @@ Now that we have the clusters we will create a Cluster-Mask Point Cloud to visua
     cluster_cloud.from_list(color_cluster_point_list)
 
 ```
+
+<img src="./misc_images/pcl_cluster.png" width="400" />
+
 
 #### 2. Complete Exercise 3 Steps.  Features extracted and SVM trained.  Object recognition implemented.
 In this section, we are going to associate each cloud point with the object that it represents. To do so we
