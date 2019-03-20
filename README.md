@@ -244,6 +244,11 @@ The confusion matrices obtained are shown below.
 <img src="./misc_images/ConfusionMatrix_w1_200_64.png" width="400" /><img src="./misc_images/NConfusionMatrix_w1_200_64.png" width="400" />
 
 <img src="./misc_images/ConfusionMatrix_W2_v1.png" width="400" /><img src="./misc_images/NConfusionMatrix_W2_v1.png" width="400" />
+
+Although the obtained accuracy was really good with those models, they didn't achieve the recognition task correctly.
+Thus, the kernel RBF was changed to linear, although we lost accuracy in the confusion matrix, the model performed 
+considerably better.
+
 ### Pick and Place Setup
 
 #### 1. For all three tabletop setups (`test*.world`), perform object recognition, then read in respective pick list (`pick_list_*.yaml`). Next construct the messages that would comprise a valid `PickPlace` request output them to `.yaml` format.
@@ -255,3 +260,12 @@ As it can be seen 3/3(100%) objects are recognised in test case 1, 4/5(80%) in t
 
 <img src="./misc_images/W3.png" width="400" />
 
+It has been observed that the accuracy provided by the program train_svm.py is not a good measure of how well
+the model works. Indeed, I was in a point were objects were not recognised and, as seen before, the accuracy was really good,
+in that moment I thought that there was a bug in my code. However, it turned out to be caused by the RBF kernel. 
+When it was set to linear everything started to work.
+
+As for parameters, it has been observed that the number of bins is crucial. If it is set too high the performance of
+the model decrease. Three values have been implemented: 32,64 and 128, and the first one has provided better results.
+The number of poses is also really important. In this case, the same behaviour has been observed, there is a middle value,
+in this case 150, for which the model works quite well. The overall performance could be improved by carrying out a fine tune.
