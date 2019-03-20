@@ -272,5 +272,6 @@ When it was set to linear everything started to work.
 
 As for parameters, it has been observed that the number of bins is crucial. If it is set too high the performance of
 the model decrease. Three values have been implemented: 32,64 and 128, and the first one has provided better results.
-The number of poses is also really important. In this case, the same behaviour has been observed, there is a middle value,
-in this case 150, for which the model works quite well. The overall performance could be improved by carrying out a fine tune.
+The number of poses is also really important. In fact, the same behaviour has been observed, there is a middle value,
+in this case 150, for which the model works quite well. The overall performance could be improved by carrying out a fine tune of
+those parameters.
